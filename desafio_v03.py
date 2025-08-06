@@ -16,8 +16,10 @@ class Conta:
     def Saldo(self):
         pass
 
-    def NovaConta(self, conta):
-        self.conta = conta
+    @classmethod
+    def NovaConta(cls, cliente, numero):
+       
+        return cls(cliente, numero)
 
     def Sacar(self):
         pass
@@ -57,12 +59,13 @@ class Cliente:
         pass
 
     def adicionar_conta(self):
-        pass
+
+        return NovaConta(self._conta)
 
 class PessoaFisica(Cliente):
 
-    def __init__(self, cpf, nome, data_nascimento):
-        super().__init__()
+    def __init__(self, cpf, nome, data_nascimento, endereco):
+        super().__init__(endereco)
 
         self.cpf = cpf
         self._nome = nome
@@ -70,6 +73,7 @@ class PessoaFisica(Cliente):
         
 
 def menu():
+
     menu = """ 
 =============== MENU ===============
 
@@ -91,33 +95,32 @@ def menu():
 
 def criar_usuario(usuarios):
 
+    cpf = input("Informe o número do CPF(somente números): ")
+    nome = input("Insara o Nome Completo: ")
+    endereco = input("Informe o Endereço  (Logadouro - Nº - Bairro - Cidade/UF): ")
+    data_nascimento = input("Informa a Data de Nascimento (dd-mm-aaa): ")
+
     for usuario in usuarios:
         if usuario.cpf == cpf:
             print("\n Usuário já Cadastrado! Tente Novamente.")
             return
         
-    cpf = input("Informe o número do CPF(somente números): ")
-    nome = input("Insara o Nome Completo: ")
-    endereco = input("Informe o Endereço  (Logadouro - Nº - Bairro - Cidade/UF): ")
-    data_nascimento = input("Informa a Data de Nascimento (dd-mm-aaa): ")
     
-
-    cliente = PessoaFisica(cpf, endereco, nome, data_nascimento)
+    cliente = PessoaFisica(cpf, nome, data_nascimento, endereco)
     usuarios.append(cliente)
     
-    print("\nSeu Cadastro foi Concluído com Sucesso!\n\nPara Continuar, Crie sua Conta.")
+    print("\nUsuário criado com Sucesso!")
 
-def criar_conta_corrente(agencia, numero_conta, usuarios):
+def criar_conta_corrente(contas, usuarios):
 
-    cpf = int(input("Informe o número do CPF(somente números): "))
+    cpf = input("Informe o número do CPF(somente números): ")
 
     for usuario in usuarios:
         if usuario.cpf == cpf:
-            
-            conta = Conta.NovaConta(agencia, numero_conta, usuarios)
-            conta.append(conta)
+            conta = Conta.NovaConta(cliente, numero)
 
             if conta:
+                conta.append(1, cliente)
                 numero_conta += 1
             else:
                 print("\nUsuário nao Encontrado, Cadastre-se para Criar uma Conta Corrente")
@@ -135,7 +138,7 @@ def main():
     #usuarios = []
     #conta_corrente = []
     #conta_poupanca = []
-    #numero_conta = 1
+    #numero_conta = 11
     #AGENCIA = "0001"
     
 
@@ -154,7 +157,7 @@ def main():
 
         # Inicio Opção [2] ---- >>>> Criar Conta Corrente
         elif opcao == "2":
-            conta = criar_conta_corrente(contas)
+            conta = criar_conta_corrente(contas, usuarios)
                 
         # Inicio Opção [3] ---- >>>> Criar Conta Poupança
         elif opcao == "3":
