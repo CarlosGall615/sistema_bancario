@@ -1,13 +1,16 @@
 class ContaBancaria:
 
-    def __init__(self, titular, saldo=0):
+    def __init__(self, cpf, titular, numero_conta, saldo=0):
+        self.cpf = cpf
         self.titular = titular
         self.saldo = saldo
+        self.numero_conta = numero_conta
+        self.AGENCIA = "0001"
 
-    def exibir_saldo(self):
+    #def exibir_conta(self):
 
-        print(f"{self.titular}, seu Saldo é de: R$ {self.saldo}")
-        return self.saldo
+        #print(f"{self.titular}, sua Conta é {self.numero_conta} e seu Saldo é de: R$ {self.saldo}")
+        #return self.saldo
     
     def depositar(self, valor):
 
@@ -29,12 +32,14 @@ class SistemaBancario:
 
     def abrir_conta(self):
 
+        cpf = input("Digite o CPF(somente números): ")
         nome = input("Digite seu nome: ")
         saldo_inicial = float(input("Digite o Saldo inicial(R$): "))
-
-        nova_conta = ContaBancaria(nome, saldo_inicial)
-        print(f"\nBem-Vindo {nome}, Sua conta foi criada com Sucesso.\n")
         
+        nova_conta = ContaBancaria(cpf, nome, saldo_inicial, numero_conta)
+        print(f"\nBem-Vindo {nome}, Sua conta foi criada com Sucesso.\n")
+
+        self.numero_conta += 1
         return self.contas_cadastradas.append(nova_conta)
     
     def listar_contas(self):
@@ -45,8 +50,40 @@ class SistemaBancario:
         for conta in self.contas_cadastradas:
             print(f"\t__________ CONTAS __________\n")
             print(f"\tNome:\t\t{conta.titular}")
+            print(f"\tAgência:\t{conta.AGENCIA}")
+            print(f"\tConta:\t\t{conta.numero_conta}")
+            print(f"\tCPF:\t\t{conta.cpf}")
             print(f"\tSaldo:\t\tR$ {conta.saldo:.2f}\n")
-            print(f"\t____________________________\n")
+            
+    
+    def buscar_conta_cliente(self, cpf):
+
+        for conta in self.contas_cadastradas:
+            if conta.cpf == cpf:
+                return conta
+        return None   
+
+    def depositar(self):
+
+        cpf = input("CPF: ")
+        conta = self.buscar_conta_cliente(cpf)
+
+        if conta:
+            valor = float(input("Digite o Valor para Depositar: "))
+            conta.depositar(valor)
+            
+    def sacar(self):
+
+        cpf = input("CPF: ")
+        conta = self.buscar_conta_cliente(cpf)
+
+        if conta:
+            valor = float(input("Digite o Valor para Saque: "))
+            conta.sacar(valor)
+
+    def transacao(self):
+        pass
+
 
 def menu():
 
@@ -59,6 +96,7 @@ def menu():
     [2] - Listar Contas         |
     [3] - Depositar             |
     [4] - Sacar                 |
+    [5] - Extrato               |
                                 |
     [0] - Sair                  |
 """
@@ -84,6 +122,9 @@ def main():
 
         elif option == "4":
             sistema.sacar()
+
+        elif option == "5":
+            sistema.transacao()
 
         elif option == "0":
             print("Obrigado por Usar o Sistema!")
