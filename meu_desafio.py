@@ -1,10 +1,12 @@
 class ContaBancaria:
+    contador_contas = 1
 
-    def __init__(self, cpf, titular, numero_conta, saldo=0):
+    def __init__(self, cpf, titular, saldo=0):
         self.cpf = cpf
         self.titular = titular
         self.saldo = saldo
-        self.numero_conta = numero_conta
+        self.numero_conta = ContaBancaria.contador_contas
+        ContaBancaria.contador_contas += 1
         self.AGENCIA = "0001"
 
     #def exibir_conta(self):
@@ -36,10 +38,9 @@ class SistemaBancario:
         nome = input("Digite seu nome: ")
         saldo_inicial = float(input("Digite o Saldo inicial(R$): "))
         
-        nova_conta = ContaBancaria(cpf, nome, saldo_inicial, numero_conta)
+        nova_conta = ContaBancaria(cpf, nome, saldo_inicial)
         print(f"\nBem-Vindo {nome}, Sua conta foi criada com Sucesso.\n")
 
-        self.numero_conta += 1
         return self.contas_cadastradas.append(nova_conta)
     
     def listar_contas(self):
@@ -56,26 +57,41 @@ class SistemaBancario:
             print(f"\tSaldo:\t\tR$ {conta.saldo:.2f}\n")
             
     
-    def buscar_conta_cliente(self, cpf):
+    def buscar_cliente(self, cpf):
 
         for conta in self.contas_cadastradas:
             if conta.cpf == cpf:
                 return conta
         return None   
 
+    def buscar_conta_cliente(self, numero_conta):
+
+        for conta in self.contas_cadastradas:
+            print(conta.numero_conta)
+            
+    
+
+        
     def depositar(self):
 
         cpf = input("CPF: ")
-        conta = self.buscar_conta_cliente(cpf)
+        conta = self.buscar_cliente(cpf)
 
         if conta:
-            valor = float(input("Digite o Valor para Depositar: "))
-            conta.depositar(valor)
+            
+            print(f"Nº da Conta: {conta.numero_conta}")
+            conta_para_deposito = input("Digite a Conta para Depósito: ")
+            if conta.numero_conta == conta_para_deposito:
+                valor = float(input("Digite o Valor para Depositar: "))
+                print(f"Depósito de R$ {valor:.2f} Efetuado com Sucesso na Conta {conta_para_deposito}. ")
+            
+                
+                conta.depositar(valor)
             
     def sacar(self):
 
         cpf = input("CPF: ")
-        conta = self.buscar_conta_cliente(cpf)
+        conta = self.buscar_cliente(cpf)
 
         if conta:
             valor = float(input("Digite o Valor para Saque: "))
